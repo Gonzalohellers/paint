@@ -9,8 +9,10 @@ const eraserBtn = document.getElementById("eraser");
 const pencilDiv = document.getElementById("penDiv");
 const selectorColor = document.getElementById("selectorColor");
 const selectorWidth=document.getElementById("selectorWidth");
-const fileInput=document.getElementById("subirArchivo")
-const save=document.getElementById("Save")
+const fileInput=document.getElementById("subirArchivo");
+const save=document.getElementById("Save");
+const byNFilter=document.getElementById("b&wfilter");
+const monocrome=document.getElementById("monocromeFilter");
 
 // Componentes del Pen
 let miPencil = null;
@@ -83,8 +85,18 @@ canvas.addEventListener('mousemove', function (evento) {
         miPencil.draw();
     }
 });
+
+
 pencilDiv.addEventListener("click", () => {
     pencilClick = true;
+})
+
+byNFilter.addEventListener("click",()=>{
+    miImage.escalaDeGrises();
+})
+
+monocrome.addEventListener("click", ()=>{
+    miImage.monocrome()
 })
 
 

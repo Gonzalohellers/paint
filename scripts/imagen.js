@@ -20,7 +20,7 @@ class Imagen{
     escalaDeGrises(){
         let imageData=this.context.getImageData(0, 0, this.width, this.height);
 
-        for(let pixel=0; pixel.imageData.data; i+=4){
+        for(let pixel=0; pixel<imageData.data.length; pixel+=4){
             let media=(imageData.data[pixel+0]+imageData.data[pixel+1]+imageData.data[pixel+2])/3
             imageData.data[pixel+0]=media
             imageData.data[pixel+1]=media
@@ -30,10 +30,10 @@ class Imagen{
         this.context.putImageData(imageData, 0, 0);
     }
 
-    monocromo(){
+    monocrome(){
         let imageData=this.context.getImageData(0, 0, this.width, this.height);
-
-        for(let pixel=0; pixel.imageData.data; i+=4){
+        let promedio=0
+        for(let pixel=0; pixel<imageData.data.length; pixel+=4){
             let media=(imageData.data[pixel+0]+imageData.data[pixel+1]+imageData.data[pixel+2])/3
             if(media>128){
                 promedio=255;
@@ -41,9 +41,9 @@ class Imagen{
             else{
                 promedio=0;
             }
-            imageData.data[pixel+0]=media
-            imageData.data[pixel+1]=media
-            imageData.data[pixel+2]=media
+            imageData.data[pixel+0]=promedio
+            imageData.data[pixel+1]=promedio
+            imageData.data[pixel+2]=promedio
         }
 
         this.context.putImageData(imageData, 0, 0);
@@ -51,7 +51,7 @@ class Imagen{
 
     negativo(){
         let imageData=this.context.getImageData(0, 0, this.width, this.height);
-        for(let pixel=0; pixel<imageData.data; pixel+=4){
+        for(let pixel=0; pixel<imageData.data.length; pixel+=4){
             imageData.data[pixel+0]=255-imageData.data[pixel+0]
             imageData.data[pixel+1]=255-imageData.data[pixel+1]
             imageData.data[pixel+2]=255-imageData.data[pixel+2]
