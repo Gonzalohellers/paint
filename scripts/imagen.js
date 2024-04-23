@@ -70,41 +70,44 @@ class Imagen {
 
         this.context.putImageData(imageData, 0, 0); // Aplicar los cambios a la imagen en el lienzo
     }
+// Método para detectar bordes en la imagen
+detectEdges() {
+    let imageData = this.context.getImageData(0, 0, canvas.width, canvas.height); // Obtener los datos de píxeles de la imagen
+    let data = imageData.data;
 
-    // Método para detectar bordes en la imagen
-    detectEdges() {
-        let imageData = this.context.getImageData(0, 0, canvas.width, canvas.height); // Obtener los datos de píxeles de la imagen
-        let data = imageData.data;
-
-        // Aplicar el filtro de detección de bordes (operador de Sobel)
-        for (let y = 0; y < canvas.height; y++) {
-            for (let x = 0; x < canvas.width; x++) {
-                let index = (y * canvas.width + x) * 4;
-                let gray = (data[index] + data[index + 1] + data[index + 2]) / 3;
-                data[index] = data[index + 1] = data[index + 2] = gray;
-            }
+    // Aplicar el filtro de detección de bordes (operador de Sobel)
+    var matrizConValores = [
+        [-1, 0, 1],
+        [-2, 0, 2],
+        [-1, 0, 1]
+    ];
+    for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+            let index = (y * canvas.width + x) * 4;
+            let gray = (data[index] * 0.3 + data[index + 1] * 0.59 + data[index + 2] * 0.11); // Convertir a escala de grises
+            data[index] = data[index + 1] = data[index + 2] = gray;
         }
-
-        // Aplicar el efecto de bordes
-        for (let y = 1; y < canvas.height - 1; y++) {
-            for (let x = 1; x < canvas.width - 1; x++) {
-                let index = (y * canvas.width + x) * 4;
-                let gx = (
-                    -data[index - 4] - 2 * data[index - 3] - data[index - 2] +
-                    data[index + 2] + 2 * data[index + 3] + data[index + 4]
-                );
-                let gy = (
-                    -data[index - 4] - 2 * data[index] - data[index + 4] +
-                    data[index - (canvas.width * 4)] + 2 * data[index - (canvas.width * 4) + 1] + data[index - (canvas.width * 4) + 2]
-                );
-                let magnitude = Math.sqrt(gx * gx + gy * gy);
-                data[index] = data[index + 1] = data[index + 2] = magnitude;
-            }
-        }
-
-        this.context.putImageData(imageData, 0, 0); // Aplicar los cambios a la imagen en el lienzo
     }
 
+    // Aplicar el efecto de bordes
+    for (let y = 1; y < canvas.height - 1; y++) {
+        for (let x = 1; x < canvas.width - 1; x++) {
+            let index = (y * canvas.width + x) * 4;
+            let gx = (
+                -data[index - 4 - canvas.width * 4] - 2 * data[index - canvas.width * 4] - data[index + 4 - canvas.width * 4] +
+                data[index - 4 + canvas.width * 4] + 2 * data[index + canvas.width * 4] + data[index + 4 + canvas.width * 4]
+            );
+            let gy = (
+                -data[index - 4 - canvas.width * 4] - 2 * data[index - 4] - data[index + 4 - canvas.width * 4] +
+                data[index - 4 + canvas.width * 4] + 2 * data[index + 4] + data[index + 4 + canvas.width * 4]
+            );
+            let magnitude = Math.sqrt(gx * gx + gy * gy);
+            data[index] = data[index + 1] = data[index + 2] = magnitude > 255 ? 255 : magnitude; // Ajustar los valores si son mayores que 255
+        }
+    }
+
+    this.context.putImageData(imageData, 0, 0); // Aplicar los cambios a la imagen en el lienzo
+}
     // Método para aplicar un filtro de desenfoque a la imagen
     applyBlur() {
         var imageData = this.context.getImageData(0, 0, canvas.width, canvas.height); // Obtener los datos de píxeles de la imagen
